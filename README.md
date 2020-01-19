@@ -2,7 +2,7 @@
 15/01/2019
 
 ### Project Title
-Auto Calculation of trading history with VBA
+Auto Calculation of trading results with VBA
 
 ### Description
 This code automatically calculates the profit/loss of each trading from transaction histories to facilate the analysis of strategies.
