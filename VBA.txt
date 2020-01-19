@@ -1,0 +1,69 @@
+Option Explicit
+
+Sub Trading_Result()
+Sheet1.AutoFilter.ShowAllData
+
+If Range("L1").Value <> "P/L" Then
+
+Columns("L:L").Insert
+Range("L1").Value = "P/L"
+End If
+Range("L" & 2, "L" & Rows.Count).Clear
+
+Dim lastrow As Long
+Dim i As Long
+Dim Volume As Long
+Dim PL As Currency
+Dim found1 As Range
+
+
+lastrow = Cells(Rows.Count, 1).End(xlUp).Row
+
+For i = 2 To lastrow
+    
+  Volume = 0
+  PL = 0  'refresh variables for the calculation of the next trade
+
+  If Cells(i, 7).Value = "1" Then 'looking for each opening trade
+     
+     Volume = Cells(i, 10).Value 'grab the volume of the opening position for further matching
+     
+     Set found1 = Range(Cells(i, 5), Cells(lastrow, 5)).Find(what:=Cells(i, 5).Value, _
+     LookIn:=xlValues, lookat:=xlWhole)
+     'Looking for next trade of the same symbol
+     
+     Select Case Cells(i, 6).Value
+     
+       Case 1
+       PL = found1.Offset(0, 8).Value - Cells(i, 13).Value 'case buying
+       Case 2
+       PL = Cells(i, 13).Value - found1.Offset(0, 8).Value 'case selling
+     
+     End Select
+     
+     Volume = Volume - found1.Offset(0, 5).Value
+     
+     Do Until Volume = 0              'looking for next should trades were not fully settled
+        Set found1 = Range(Cells(i, 5), Cells(lastrow, 5)).FindNext(found1)
+                                     
+        Select Case Cells(i, 6).Value 'adding new result to previous calc
+     
+        Case 1
+        PL = found1.Offset(0, 8).Value - PL
+        Case 2
+        PL = PL - found1.Offset(0, 8).Value
+     
+        End Select
+        
+        Volume = Volume - found1.Offset(0, 5).Value 'adjust unsettled volume
+     
+     Loop
+        
+     Range("L" & i).Value = PL 'assign the PL calculated
+     
+  End If
+
+Next i
+Range("L:L").NumberFormat = "general"
+
+End Sub
