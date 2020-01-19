@@ -11,6 +11,3 @@ The result of each transaction would be shown at "L" Column of each closing tran
 
 ### Files used
 Sample_Data.xlsx (Confidential info has been replaced with 0 or Alphabet)
-
-### Credits
-Sakila DVD Rental database
